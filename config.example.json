@@ -1,0 +1,153 @@
+{
+  "displayName": "Example Holdings",
+  "timezone": "America/Chicago",
+  "viewers": [
+    "preview@example.com"
+  ],
+  "segments": [
+    "Main Street Building",
+    "Oak Lane Property",
+    "New property",
+    "Coaching",
+    "Agency services",
+    "Software"
+  ],
+  "incomeTypes": [
+    {
+      "any": [
+        "loan"
+      ],
+      "type": "Loan repayment"
+    },
+    {
+      "any": [
+        "lease",
+        "rent",
+        "suite",
+        "deposit"
+      ],
+      "type": "Rent"
+    },
+    {
+      "any": [
+        "parking"
+      ],
+      "type": "Parking"
+    },
+    {
+      "any": [
+        "coaching"
+      ],
+      "type": "Coaching"
+    },
+    {
+      "any": [
+        "agency",
+        "website"
+      ],
+      "type": "Agency services"
+    }
+  ],
+  "rules": [
+    {
+      "when": {
+        "typeIn": [
+          "Loan repayment"
+        ]
+      },
+      "set": {
+        "segment": "Loans (not income)"
+      },
+      "flag": "Loan repayment, not sales income"
+    },
+    {
+      "when": {
+        "originIs": "OTHER_SUB_ACCOUNT_LOCATION_ID"
+      },
+      "set": {
+        "segment": "Events",
+        "type": "Sponsorship"
+      },
+      "flag": "Not one of the named businesses, confirm where it belongs"
+    },
+    {
+      "when": {
+        "typeIn": [
+          "Rent"
+        ],
+        "titleAny": [
+          "oak lane"
+        ]
+      },
+      "set": {
+        "segment": "Oak Lane Property",
+        "space": "7 Oak Lane, Unit B"
+      }
+    },
+    {
+      "when": {
+        "typeIn": [
+          "Rent",
+          "Parking"
+        ],
+        "addressFrom": {
+          "tag": "tenant main street",
+          "addressAny": [
+            "main st"
+          ]
+        }
+      },
+      "set": {
+        "segment": "Main Street Building",
+        "space": "$address"
+      }
+    },
+    {
+      "when": {
+        "typeIn": [
+          "Rent",
+          "Parking"
+        ]
+      },
+      "set": {
+        "segment": "Main Street Building",
+        "space": "Space not on record"
+      },
+      "flag": "Confirm property and suite"
+    },
+    {
+      "when": {
+        "typeIn": [
+          "Coaching"
+        ]
+      },
+      "set": {
+        "segment": "Coaching"
+      }
+    },
+    {
+      "when": {
+        "typeIn": [
+          "Agency services"
+        ]
+      },
+      "set": {
+        "segment": "Agency services"
+      }
+    }
+  ],
+  "fallback": {
+    "segment": "Other income",
+    "flag": "Needs a category"
+  },
+  "ownCompanies": [
+    "example holdings"
+  ],
+  "spaceAliases": {
+    "\\bmain\\b(\\s+st\\b)?": "Main St"
+  },
+  "quickbooks": {
+    "bank": "Operating Checking",
+    "prefix": "PL"
+  }
+}

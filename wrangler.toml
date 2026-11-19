@@ -1,0 +1,43 @@
+name = "payments-ledger"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+# Your Cloudflare account id. You can also leave this out and set CLOUDFLARE_ACCOUNT_ID instead.
+account_id = "YOUR_ACCOUNT_ID"
+
+# Sync runs every 15 minutes. Each run does a bounded slice of work so it
+# stays inside the free plan's per-invocation limits; backfill catches up
+# over a few runs.
+[triggers]
+crons = ["*/15 * * * *"]
+
+# Workers Logs: free plan keeps 3 days, well inside the daily log allowance at this traffic.
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ledger"
+database_id = "YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[vars]
+ENVIRONMENT = "production"
+# Sender for sign-in link emails. The domain must be verified in Resend.
+MAIL_FROM = "Reports <reports@example.com>"
+# Optional. Comma list of branded addresses that proxy to this Worker, e.g. "reports.example.com".
+PUBLIC_HOSTS = ""
+# Only these origins may frame the page: your white-label app domain plus HighLevel's.
+FRAME_ANCESTORS = "https://app.your-crm-domain.com https://app.gohighlevel.com https://*.leadconnectorhq.com"
+
+# Secrets (set with `wrangler secret put`, never committed):
+#   GHL_CLIENT_ID, GHL_CLIENT_SECRET, GHL_REDIRECT_URI, GHL_SSO_SHARED_SECRET
+#   SESSION_SECRET   random, signs viewer sessions
+#   ENC_KEY          random 32 bytes base64, encrypts stored credentials at rest
+#   RESEND_API_KEY   send-only key for the sign-in link emails
+#   ADMIN_SECRET_SHA256  the SHA-256 of the admin secret, which itself never leaves the operator's machine
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true

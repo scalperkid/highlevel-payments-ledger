@@ -1,0 +1,8 @@
+# Copy to .dev.vars for local preview. Never commit .dev.vars.
+ENVIRONMENT=development
+DEV_LOCATION=dev_location
+DEV_EMAIL=preview@example.com
+SESSION_SECRET=replace-with-a-long-random-string
+ENC_KEY=replace-with-32-random-bytes-base64
+FRAME_ANCESTORS='self'
+ADMIN_SECRET_SHA256=
